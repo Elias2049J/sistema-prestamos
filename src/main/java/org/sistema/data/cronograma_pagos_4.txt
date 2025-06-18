@@ -1,0 +1,23 @@
+================= CRONOGRAMA DE PAGOS ==================
+ 
+Nro. Cuota   Cuota (S/) Fecha Vencimiento     Estado
+1            611.567181 2025-08-17            Pendiente
+2            611.567181 2025-09-17            Pendiente
+3            611.567181 2025-10-17            Pendiente
+4            611.567181 2025-11-17            Pendiente
+5            611.567181 2025-12-17            Pendiente
+6            611.567181 2026-01-17            Pendiente
+7            611.567181 2026-02-17            Pendiente
+8            611.567181 2026-03-17            Pendiente
+9            611.567181 2026-04-17            Pendiente
+10           611.567181 2026-05-17            Pendiente
+11           611.567181 2026-06-17            Pendiente
+12           611.567181 2026-07-17            Pendiente
+13           611.567181 2026-08-17            Pendiente
+14           611.567181 2026-09-17            Pendiente
+15           611.567181 2026-10-17            Pendiente
+16           611.567181 2026-11-17            Pendiente
+17           611.567181 2026-12-17            Pendiente
+18           611.567181 2027-01-17            Pendiente
+19           611.567181 2027-02-17            Pendiente
+20           611.567181 2027-03-17            Pendiente
