@@ -1,6 +1,6 @@
 package org.sistema.model;
 
-import org.sistema.use_case.CrudUseCase;
+import org.sistema.use_case.ManageUseCase;
 
-public abstract class GestionModel<T, ID> implements CrudUseCase<T, ID> {
+public abstract class ManageModel<T, ID> implements ManageUseCase<T, ID> {
 }

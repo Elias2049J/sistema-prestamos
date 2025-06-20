@@ -19,15 +19,6 @@ public class Prestamo {
     private Cliente cliente;
     private String estado;
 
-
-
-
-
-
-
-
-
-
     public double getMontoMensual(){
         double tasaMensual = tasaInteres / 100;
         return monto * (

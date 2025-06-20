@@ -1,0 +1,4 @@
+================= HISTORIAL DE PAGOS ==================
+ 
+DNI             Nro. Cuota      Fecha de Pago        Monto Pagado   
+12365478        1               2025-06-18           945.595966     

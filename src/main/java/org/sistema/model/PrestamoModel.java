@@ -1,19 +1,24 @@
 package org.sistema.model;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 import org.sistema.entity.Cliente;
 import org.sistema.entity.Prestamo;
 import org.sistema.use_case.ClienteUseCase;
-import org.sistema.use_case.PersistenceUseCase;
+import org.sistema.interfaces.PersistenceInterface;
 import org.sistema.use_case.PrestamoUseCase;
-import org.sistema.persistencia.PersistencePrestamo;
-import org.sistema.repository.DataRepository;
+import org.sistema.repository.PrestamoRepository;
 
 import java.time.LocalDate;
+@EqualsAndHashCode(callSuper = false)
 @Data
-public class PrestamoModel implements PrestamoUseCase {
-    private PersistenceUseCase persistencePrestamo = new PersistencePrestamo();
-    private ClienteUseCase clienteModel = new ClienteModel();
+@AllArgsConstructor
+@NoArgsConstructor
+public class PrestamoModel extends ManageModel<Prestamo, Integer> implements PrestamoUseCase {
+    private PersistenceInterface persistencePrestamo;
+    private ClienteUseCase clienteModel;
 
     @Override
     public boolean create(double monto, Integer nroCuotas, double tasaInteres, Cliente cliente) {
@@ -21,21 +26,21 @@ public class PrestamoModel implements PrestamoUseCase {
         LocalDate fechaInicio = LocalDate.now();
         LocalDate fechaVencimiento = fechaInicio.plusMonths(nroCuotas);
         String estado = "activo";
-        if (DataRepository.getPrestamos().isEmpty()) {
+        if (PrestamoRepository.getPrestamos().isEmpty()) {
             id = 1;
         } else {
-            id = DataRepository.getPrestamos().getLast().getIdPrestamo()+1;
+            id = PrestamoRepository.getPrestamos().getLast().getIdPrestamo()+1;
         }
         Prestamo nP = new Prestamo(id, monto, nroCuotas, tasaInteres, fechaInicio, fechaVencimiento, cliente, estado);
         if (!nP.esValido()) {
             return false;
         }
-        DataRepository.agregarPrestamo(nP);
-        DataRepository.setDatosCronograma(calcDatosCronograma(nP));
-        persistencePrestamo.guardarPrestamos(DataRepository.getPrestamos());
-        return persistencePrestamo.exportarCronograma(DataRepository.getDatosCronograma());
+        PrestamoRepository.agregarPrestamo(nP);
+        PrestamoRepository.setDatosCronograma(calcDatosCronograma(nP));
+        return persistencePrestamo.exportarLista(PrestamoRepository.getPrestamos()) &&
+                persistencePrestamo.exportarCronograma(PrestamoRepository.getDatosCronograma(), nP.getCliente().getDni()) &&
+                persistencePrestamo.importarLista(PrestamoRepository.getPrestamos());
     }
-
     @Override
     public boolean update() {
         return false;
@@ -44,18 +49,31 @@ public class PrestamoModel implements PrestamoUseCase {
     @Override
     public boolean delete(Integer id) {
         Prestamo p = getById(id);
-        DataRepository.getClientes().remove(p);
+        PrestamoRepository.getPrestamos().remove(p);
         return true;
     }
 
     @Override
     public Prestamo getById(Integer id) {
-        for (Prestamo p: DataRepository.getPrestamos()) {
+        for (Prestamo p: PrestamoRepository.getPrestamos()) {
             if(p.getIdPrestamo().equals(id)){
                 return p;
             }
         }
         return null;
+    }
+
+    @Override
+    public Object[][] getCronogramaByDni(String dni){
+        if (PrestamoRepository.getDatosCronograma() == null) {
+            PrestamoRepository.setDatosCronograma(persistencePrestamo.importarCronograma(dni));
+        }
+        return PrestamoRepository.getDatosCronograma();
+    }
+
+    @Override
+    public boolean updateCronograma(Object[][] datos) {
+        return false;
     }
 
     @Override
@@ -74,5 +92,23 @@ public class PrestamoModel implements PrestamoUseCase {
             contadorCuota++;
         }
         return cronogramaDatos;
+    }
+
+    @Override
+    public boolean registrarPago(Prestamo p, Integer nroCuota) {
+        Object[][] cronograma = PrestamoRepository.getDatosCronograma();
+        for (Object[] fila : cronograma) {
+            if (Integer.parseInt(fila[0].toString()) == nroCuota) {
+                fila[3] = "Pagado";
+            }
+        }
+        PrestamoRepository.setDatosCronograma(cronograma);
+        return persistencePrestamo.exportarCronograma(cronograma, p.getCliente().getDni()) &&
+                persistencePrestamo.exportarHistorialPago(nroCuota, p.getCliente().getDni(), LocalDate.now().toString());
+    }
+
+    public void setPersistencePrestamo(PersistenceInterface persistencePrestamo) {
+        this.persistencePrestamo = persistencePrestamo;
+        this.persistencePrestamo.importarLista(PrestamoRepository.getPrestamos());
     }
 }

@@ -1,10 +1,10 @@
-package org.sistema.use_case;
+package org.sistema.interfaces;
 
 import org.sistema.entity.Prestamo;
 
 import java.util.List;
 
-public interface PersistenceUseCase {
+public interface PersistenceInterface {
     boolean exportarCronograma(Object[][] datos, String dni);
     boolean importarLista(List<Prestamo> lista);
     Object[][] importarCronograma(String dni);

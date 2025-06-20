@@ -1,0 +1,149 @@
+@startuml
+
+' Interfaces
+interface ManageUseCase<T, ID> {
+  +getById(id: ID): T
+}
+
+interface ClienteUseCase {
+  +create(nombre: String, apellido: String, edad: Integer, dni: String): Cliente
+  +update(nombre: String, apellido: String, edad: Integer, dni: String, prestamo: Prestamo): boolean
+  +delete(id: Integer): boolean
+  +getByPrestamoId(id: Integer): Cliente
+}
+
+interface PrestamoUseCase {
+  +create(monto: double, nroCuotas: Integer, tasaInteres: double, cliente: Cliente): boolean
+  +update(): boolean
+  +delete(id: Integer): boolean
+  +getById(id: Integer): Prestamo
+  +getCronogramaByDni(dni: String): Object[][]
+  +updateCronograma(datos: Object[][]): boolean
+  +calcDatosCronograma(p: Prestamo): Object[][]
+  +registrarPago(p: Prestamo, nroCuota: Integer): boolean
+}
+
+interface PersistenceUseCase {
+  +exportarCronograma(datos: Object[][], dni: String): boolean
+  +importarLista(lista: List<Prestamo>): boolean
+  +importarCronograma(dni: String): Object[][]
+  +exportarLista(lista: List<Prestamo>): boolean
+  +exportarHistorialPago(nroCuota: Integer, dni: String, fechaPago: String): boolean
+}
+
+' Clases abstractas
+abstract class ManageModel<T, ID> {
+}
+
+' Clases concretas
+class Cliente {
+  -nombre: String
+  -apellido: String
+  -edad: Integer
+  -dni: String
+  -prestamo: Prestamo
+}
+
+class Prestamo {
+  -idPrestamo: Integer
+  -monto: double
+  -nroCuotas: Integer
+  -tasaInteres: double
+  -fechaInicio: LocalDate
+  -fechaVencimiento: LocalDate
+  -cliente: Cliente
+  -estado: String
+  +getMontoMensual(): double
+  +esValido(): boolean
+}
+
+class ClienteModel {
+  +create(nombre: String, apellido: String, edad: Integer, dni: String): Cliente
+  +update(nombre: String, apellido: String, edad: Integer, dni: String, prestamo: Prestamo): boolean
+  +delete(id: Integer): boolean
+  +getById(id: Integer): Cliente
+  +getByPrestamoId(id: Integer): Cliente
+}
+
+class PrestamoModel {
+  -persistencePrestamo: PersistenceUseCase
+  -clienteModel: ClienteUseCase
+  +create(monto: double, nroCuotas: Integer, tasaInteres: double, cliente: Cliente): boolean
+  +update(): boolean
+  +delete(id: Integer): boolean
+  +getById(id: Integer): Prestamo
+  +getCronogramaByDni(dni: String): Object[][]
+  +updateCronograma(datos: Object[][]): boolean
+  +calcDatosCronograma(p: Prestamo): Object[][]
+  +registrarPago(p: Prestamo, nroCuota: Integer): boolean
+}
+
+class PersistencePrestamo {
+  +exportarCronograma(datos: Object[][], dni: String): boolean
+  +importarLista(lista: List<Prestamo>): boolean
+  +importarCronograma(dni: String): Object[][]
+  +exportarLista(lista: List<Prestamo>): boolean
+  +exportarHistorialPago(nroCuota: Integer, dni: String, fechaPago: String): boolean
+}
+
+class DataRepository {
+  {static} -prestamos: List<Prestamo>
+  {static} -clientes: List<Cliente>
+  {static} -datosCronograma: Object[][]
+  {static} +agregarPrestamo(prestamo: Prestamo): boolean
+  {static} +agregarCliente(cliente: Cliente): boolean
+}
+
+class UseCaseFactory {
+  {static} +createPrestamoUseCase(): PrestamoUseCase
+  {static} +createClienteUseCase(): ClienteUseCase
+  {static} +createPersistenceUseCase(): PersistenceUseCase
+}
+
+' Vistas
+class VentanaPrincipal {
+}
+
+class VentanaClientes {
+}
+
+class VentanaPagos {
+  -prestamoModel: PrestamoUseCase
+  -clienteModel: ClienteUseCase
+}
+
+class VentanaRegistroPrestamo {
+  -clienteModel: ClienteUseCase
+  -prestamoModel: PrestamoUseCase
+}
+
+' Relaciones de herencia
+ManageModel ..|> ManageUseCase
+ClienteModel --|> ManageModel
+PrestamoModel --|> ManageModel
+
+' Relaciones de implementación
+ClienteModel ..|> ClienteUseCase
+PrestamoModel ..|> PrestamoUseCase
+PersistencePrestamo ..|> PersistenceUseCase
+
+' Relaciones de asociación/composición
+Cliente "1" -- "1" Prestamo : tiene >
+Prestamo "1" -- "1" Cliente : pertenece a >
+PrestamoModel "1" -- "1" PersistenceUseCase : usa >
+PrestamoModel "1" -- "1" ClienteUseCase : usa >
+VentanaClientes "1" -- "1" ClienteUseCase : usa >
+VentanaClientes "1" -- "1" PrestamoUseCase : usa >
+VentanaPagos "1" -- "1" ClienteUseCase : usa >
+VentanaPagos "1" -- "1" PrestamoUseCase : usa >
+VentanaRegistroPrestamo "1" -- "1" ClienteUseCase : usa >
+VentanaRegistroPrestamo "1" -- "1" PrestamoUseCase : usa >
+VentanaPrincipal "1" -- "1" VentanaClientes : crea >
+VentanaPrincipal "1" -- "1" VentanaRegistroPrestamo : crea >
+UseCaseFactory ..> PrestamoUseCase : crea >
+UseCaseFactory ..> ClienteUseCase : crea >
+UseCaseFactory ..> PersistenceUseCase : crea >
+DataRepository "1" -- "*" Prestamo : almacena >
+DataRepository "1" -- "*" Cliente : almacena >
+
+@enduml

@@ -7,8 +7,6 @@ import org.sistema.use_case.PrestamoUseCase;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 public class VentanaRegistroPrestamo extends JFrame{
     private LienzoCentral lienzoCentral = new LienzoCentral();
@@ -54,7 +52,6 @@ public class VentanaRegistroPrestamo extends JFrame{
             gbc.insets = new Insets(8, 8, 8, 8);
             gbc.fill = GridBagConstraints.HORIZONTAL;
 
-            // subtitulo
             gbc.gridx = 0;
             gbc.gridy = 0;
             gbc.gridwidth = 5;
@@ -65,7 +62,6 @@ public class VentanaRegistroPrestamo extends JFrame{
             gbc.anchor = GridBagConstraints.WEST;
             gbc.gridwidth = 1;
 
-            // labels de los campos
             gbc.gridx = 0;
             gbc.gridy = 1;
             this.add(lblNombre, gbc);

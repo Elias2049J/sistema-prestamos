@@ -4,21 +4,23 @@ import lombok.Getter;
 import org.sistema.entity.Cliente;
 import org.sistema.model.ClienteModel;
 import org.sistema.model.PrestamoModel;
-import org.sistema.repository.DataRepository;
+import org.sistema.repository.PrestamoRepository;
 import org.sistema.use_case.ClienteUseCase;
 import org.sistema.use_case.PrestamoUseCase;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
+import java.util.Objects;
 
-public class VentanaPagos extends JFrame {
+public class VentanaClientes extends JFrame {
+    private VentanaPagos ventanaPagos;
     private LienzoCentral lienzoCentral = new LienzoCentral();
     private LienzoFooter lienzoFooter = new LienzoFooter();
 
-    public VentanaPagos() {
+    public VentanaClientes() {
         super();
-        this.setTitle("Gestión de Pacientes");
+        this.setTitle("Clientes");
         this.setSize(800, 600);
         this.setLocationRelativeTo(rootPane);
         this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -31,30 +33,31 @@ public class VentanaPagos extends JFrame {
         private ClienteUseCase clienteModel = new ClienteModel();
         private PrestamoUseCase prestamoModel = new PrestamoModel();
 
-        private JPanel panelBusqueda = new JPanel(new GridBagLayout());
+        private JPanel panelSuperior = new JPanel(new GridBagLayout());
 
-        private JLabel lblBusqueda = new JLabel("Seleccione un Cliente");
-        private JButton btnSelCliente = new JButton("Confirmar");
+        private JLabel lblSelCliente = new JLabel("Seleccione un Cliente: ");
+        private JComboBox<String> cboClienteDni = new JComboBox<>();
+        private JButton btnConfirmar = new JButton("Confirmar");
 
         private JPanel panelResultados = new JPanel(new BorderLayout());
 
         private String[] columnasCliente = {"Nombre", "Apellido", "Edad", "DNI"};
         private Object[][] datosCliente;
 
-        private String[] columnasPrestamo = {"Nro. Cuota", "Cuota (S/)","Fecha Vencimiento","Estado"};
-        private Object[][] datosPrestamo;
         @Getter
         private DefaultTableModel modelo;
         private JTable tabla;
         private JScrollPane scpResultados;
 
+        private String dniSeleccionado = null;
+
         public LienzoCentral() {
             super();
             this.setLayout(new GridBagLayout());
 
-            datosCliente = new Object[DataRepository.getPrestamos().size()][4];
-            for (int i = 0; i < DataRepository.getPrestamos().size(); i++) {
-                Cliente c = DataRepository.getPrestamos().get(i).getCliente();
+            datosCliente = new Object[PrestamoRepository.getPrestamos().size()][4];
+            for (int i = 0; i < PrestamoRepository.getPrestamos().size(); i++) {
+                Cliente c = PrestamoRepository.getPrestamos().get(i).getCliente();
                 datosCliente[i][0] = c.getNombre();
                 datosCliente[i][1] = c.getApellido();
                 datosCliente[i][2] = c.getEdad();
@@ -62,6 +65,12 @@ public class VentanaPagos extends JFrame {
             }
             modelo = new DefaultTableModel(datosCliente, columnasCliente);
             tabla = new JTable(modelo);
+
+            for (int i = 0; i < PrestamoRepository.getPrestamos().size(); i++) {
+                String dni = PrestamoRepository.getPrestamos().get(i).getCliente().getDni();
+                cboClienteDni.addItem(dni);
+            }
+
             scpResultados = new JScrollPane(tabla);
             panelResultados.removeAll();
             panelResultados.add(scpResultados);
@@ -70,48 +79,51 @@ public class VentanaPagos extends JFrame {
             gbcPadre.insets = new Insets(10, 20, 10, 10);
             panelResultados.add(scpResultados);
 
-            GridBagConstraints gbcBusqueda = new GridBagConstraints();
-            gbcBusqueda.insets = new Insets(2, 2, 2, 2);
-            gbcBusqueda.fill = GridBagConstraints.BOTH;
-            gbcBusqueda.weightx = 1.0;
+            GridBagConstraints gbcSuperior = new GridBagConstraints();
+            gbcSuperior.insets = new Insets(2, 2, 2, 2);
+            gbcSuperior.fill = GridBagConstraints.BOTH;
+            gbcSuperior.weightx = 1.0;
 
             int gridy = 0;
-            gbcBusqueda.gridx = 0;
-            gbcBusqueda.gridy = gridy++;
-            gbcBusqueda.gridwidth = 5;
-            gbcBusqueda.gridheight = 1;
-            gbcBusqueda.weighty = 0;
-            gbcBusqueda.weightx = 0;
-            gbcBusqueda.fill = GridBagConstraints.HORIZONTAL;
-            panelBusqueda.add(Box.createVerticalStrut(10), gbcBusqueda);
+            gbcSuperior.gridx = 0;
+            gbcSuperior.gridy = gridy++;
+            gbcSuperior.gridwidth = 5;
+            gbcSuperior.gridheight = 1;
+            gbcSuperior.weighty = 0;
+            gbcSuperior.weightx = 0;
+            gbcSuperior.fill = GridBagConstraints.HORIZONTAL;
+            panelSuperior.add(Box.createVerticalStrut(10), gbcSuperior);
 
-            gbcBusqueda.gridx = 0;
-            gbcBusqueda.gridy = gridy++;
-            gbcBusqueda.gridwidth = 1;
-            gbcBusqueda.gridheight = 1;
-            gbcBusqueda.weighty = 1;
-            gbcBusqueda.weightx = 0;
-            gbcBusqueda.fill = GridBagConstraints.NONE;
-            gbcBusqueda.anchor = GridBagConstraints.EAST;
-            lblBusqueda.setFont(new Font("Arial", Font.BOLD, 16));
-            panelBusqueda.add(lblBusqueda, gbcBusqueda);
+            gbcSuperior.gridx = 0;
+            gbcSuperior.gridy = gridy++;
+            gbcSuperior.gridwidth = 1;
+            gbcSuperior.gridheight = 1;
+            gbcSuperior.weighty = 1;
+            gbcSuperior.weightx = 0;
+            gbcSuperior.fill = GridBagConstraints.NONE;
+            gbcSuperior.anchor = GridBagConstraints.EAST;
+            lblSelCliente.setFont(new Font("Arial", Font.BOLD, 16));
+            panelSuperior.add(lblSelCliente, gbcSuperior);
 
-            gbcBusqueda.gridx = 3;
-            gbcBusqueda.gridy = gridy - 1;
-            gbcBusqueda.gridwidth = 1;
-            gbcBusqueda.gridheight = 1;
-            gbcBusqueda.weighty = 1;
-            gbcBusqueda.weightx = 0;
-            gbcBusqueda.fill = GridBagConstraints.HORIZONTAL;
-            gbcBusqueda.anchor = GridBagConstraints.CENTER;
-            panelBusqueda.add(btnSelCliente, gbcBusqueda);
+            gbcSuperior.gridx = 3;
+            gbcSuperior.gridy = gridy - 1;
+            gbcSuperior.gridwidth = 1;
+            gbcSuperior.gridheight = 1;
+            gbcSuperior.weighty = 1;
+            gbcSuperior.weightx = 0;
+            gbcSuperior.fill = GridBagConstraints.HORIZONTAL;
+            gbcSuperior.anchor = GridBagConstraints.CENTER;
+            panelSuperior.add(cboClienteDni, gbcSuperior);
+
+            gbcSuperior.gridx = 4;
+            panelSuperior.add(btnConfirmar, gbcSuperior);
 
             gbcPadre.gridx = 0;
             gbcPadre.gridy = gridy++;
             gbcPadre.weightx = 1;
             gbcPadre.fill = GridBagConstraints.HORIZONTAL;
             gbcPadre.anchor = GridBagConstraints.NORTH;
-            this.add(panelBusqueda, gbcPadre);
+            this.add(panelSuperior, gbcPadre);
 
             gbcPadre.gridx = 0;
             gbcPadre.gridy = gridy++;
@@ -120,11 +132,10 @@ public class VentanaPagos extends JFrame {
             gbcPadre.fill = GridBagConstraints.BOTH;
             this.add(panelResultados, gbcPadre);
 
-            btnSelCliente.addActionListener(e -> {
-                String dni = modelo.getValueAt(tabla.getSelectedRow(), 3).toString().trim();
-                datosPrestamo = prestamoModel.getCronogramaByDni(dni);
-                DefaultTableModel modeloPrestamo = new DefaultTableModel(datosPrestamo, columnasPrestamo);
-                tabla.setModel(modeloPrestamo);
+            btnConfirmar.addActionListener(e-> {
+                String dni = Objects.requireNonNull(cboClienteDni.getSelectedItem()).toString();
+                ventanaPagos = new VentanaPagos(prestamoModel.getCronogramaByDni(dni), dni);
+                ventanaPagos.setVisible(true);
             });
         }
     }

@@ -1,0 +1,4 @@
+================= HISTORIAL DE PAGOS ==================
+ 
+DNI             Nro. Cuota      Fecha de Pago        Monto Pagado   
+32165487        1               2025-06-19           802.425872     

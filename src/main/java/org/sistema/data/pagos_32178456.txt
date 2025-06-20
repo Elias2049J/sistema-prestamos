@@ -1,0 +1,5 @@
+================= HISTORIAL DE PAGOS ==================
+ 
+DNI             Nro. Cuota      Fecha de Pago        Monto Pagado   
+32178456        1               2025-06-19           922.987502     
+32178456        3               2025-06-19           922.987502     
