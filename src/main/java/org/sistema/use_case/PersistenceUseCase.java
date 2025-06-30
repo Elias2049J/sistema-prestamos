@@ -5,8 +5,9 @@ import org.sistema.entity.Prestamo;
 import java.util.List;
 
 public interface PersistenceUseCase {
-    boolean exportarCronograma(Object[][] datos);
-    boolean guardarPrestamos(List<Prestamo> lista);
-    boolean leerPrestamos(List<Prestamo> lista);
-    boolean leerCronograma(Integer idPrestamo);
+    boolean exportarCronograma(Object[][] datos, String dni);
+    boolean importarLista(List<Prestamo> lista);
+    boolean importarCronograma(String dni);
+    boolean exportarLista(List<Prestamo> lista);
+    boolean exportarHistorialPago(Integer nroCuota, String dni);
 }

@@ -1,0 +1,15 @@
+================= CRONOGRAMA DE PAGOS ==================
+ 
+Nro. Cuota   Cuota (S/)     Fecha Vencimiento    Estado      
+1            945.595966     2025-08-18           Pagado      
+2            945.595966     2025-09-18           Pendiente   
+3            945.595966     2025-10-18           Pendiente   
+4            945.595966     2025-11-18           Pendiente   
+5            945.595966     2025-12-18           Pendiente   
+6            945.595966     2026-01-18           Pendiente   
+7            945.595966     2026-02-18           Pendiente   
+8            945.595966     2026-03-18           Pendiente   
+9            945.595966     2026-04-18           Pendiente   
+10           945.595966     2026-05-18           Pendiente   
+11           945.595966     2026-06-18           Pendiente   
+12           945.595966     2026-07-18           Pendiente   

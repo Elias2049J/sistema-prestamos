@@ -6,6 +6,8 @@ import org.sistema.entity.Prestamo;
 public interface ClienteUseCase {
     Cliente create(String nombre, String apellido, Integer edad, String dni);
     boolean update(String nombre, String apellido, Integer edad, String dni, Prestamo prestamo);
+
     boolean delete(Integer id);
-    Cliente getById(Integer id);
+
+    Cliente getByPrestamoId(Integer id);
 }

@@ -1,0 +1,23 @@
+================= CRONOGRAMA DE PAGOS ==================
+ 
+Nro. Cuota   Cuota (S/)     Fecha Vencimiento    Estado      
+1            802.425872     2025-08-18           Pendiente   
+2            802.425872     2025-09-18           Pendiente   
+3            802.425872     2025-10-18           Pendiente   
+4            802.425872     2025-11-18           Pendiente   
+5            802.425872     2025-12-18           Pendiente   
+6            802.425872     2026-01-18           Pendiente   
+7            802.425872     2026-02-18           Pendiente   
+8            802.425872     2026-03-18           Pendiente   
+9            802.425872     2026-04-18           Pendiente   
+10           802.425872     2026-05-18           Pendiente   
+11           802.425872     2026-06-18           Pendiente   
+12           802.425872     2026-07-18           Pendiente   
+13           802.425872     2026-08-18           Pendiente   
+14           802.425872     2026-09-18           Pendiente   
+15           802.425872     2026-10-18           Pendiente   
+16           802.425872     2026-11-18           Pendiente   
+17           802.425872     2026-12-18           Pendiente   
+18           802.425872     2027-01-18           Pendiente   
+19           802.425872     2027-02-18           Pendiente   
+20           802.425872     2027-03-18           Pendiente   

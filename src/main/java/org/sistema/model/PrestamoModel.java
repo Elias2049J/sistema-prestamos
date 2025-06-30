@@ -1,6 +1,7 @@
 package org.sistema.model;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import org.sistema.entity.Cliente;
 import org.sistema.entity.Prestamo;
 import org.sistema.use_case.ClienteUseCase;
@@ -10,10 +11,15 @@ import org.sistema.persistencia.PersistencePrestamo;
 import org.sistema.repository.DataRepository;
 
 import java.time.LocalDate;
+@EqualsAndHashCode(callSuper = false)
 @Data
-public class PrestamoModel implements PrestamoUseCase {
+public class PrestamoModel extends ManageModel<Prestamo, Integer> implements PrestamoUseCase {
     private PersistenceUseCase persistencePrestamo = new PersistencePrestamo();
     private ClienteUseCase clienteModel = new ClienteModel();
+
+    public PrestamoModel(){
+        this.persistencePrestamo.importarLista(DataRepository.getPrestamos());
+    }
 
     @Override
     public boolean create(double monto, Integer nroCuotas, double tasaInteres, Cliente cliente) {
@@ -32,10 +38,10 @@ public class PrestamoModel implements PrestamoUseCase {
         }
         DataRepository.agregarPrestamo(nP);
         DataRepository.setDatosCronograma(calcDatosCronograma(nP));
-        persistencePrestamo.guardarPrestamos(DataRepository.getPrestamos());
-        return persistencePrestamo.exportarCronograma(DataRepository.getDatosCronograma());
+        return persistencePrestamo.exportarLista(DataRepository.getPrestamos()) &&
+                persistencePrestamo.exportarCronograma(DataRepository.getDatosCronograma(), nP.getCliente().getDni()) &&
+                persistencePrestamo.importarLista(DataRepository.getPrestamos());
     }
-
     @Override
     public boolean update() {
         return false;
@@ -44,7 +50,7 @@ public class PrestamoModel implements PrestamoUseCase {
     @Override
     public boolean delete(Integer id) {
         Prestamo p = getById(id);
-        DataRepository.getClientes().remove(p);
+        DataRepository.getPrestamos().remove(p);
         return true;
     }
 
@@ -56,6 +62,20 @@ public class PrestamoModel implements PrestamoUseCase {
             }
         }
         return null;
+    }
+
+    @Override
+    public Object[][] getCronogramaByDni(String dni){
+        if (DataRepository.getDatosCronograma() == null) {
+            DataRepository.setDatosCronograma(new Object[0][4]);
+        }
+        persistencePrestamo.importarCronograma(dni);
+        return DataRepository.getDatosCronograma();
+    }
+
+    @Override
+    public boolean updateCronograma(Object[][] datos) {
+        return false;
     }
 
     @Override
@@ -74,5 +94,19 @@ public class PrestamoModel implements PrestamoUseCase {
             contadorCuota++;
         }
         return cronogramaDatos;
+    }
+
+    @Override
+    public boolean registrarPago(Prestamo p, Integer nroCuota) {
+        Object[][] cronograma = DataRepository.getDatosCronograma();
+        for (Object[] fila : cronograma) {
+            if (Integer.parseInt(fila[0].toString()) == nroCuota) {
+                fila[3] = "Pagado";
+            }
+        }
+        DataRepository.setDatosCronograma(cronograma);
+        boolean cronogramaActualizado = persistencePrestamo.exportarCronograma(cronograma, p.getCliente().getDni());
+        boolean historialActualizado = persistencePrestamo.exportarHistorialPago(nroCuota, p.getCliente().getDni());
+        return cronogramaActualizado && historialActualizado;
     }
 }

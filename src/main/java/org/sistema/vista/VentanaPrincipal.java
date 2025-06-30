@@ -5,14 +5,15 @@ import java.awt.*;
 
 public class VentanaPrincipal extends JFrame {
     private VentanaRegistroPrestamo ventanaRegistroPrestamo;
+    private VentanaClientes ventanaClientes;
 
     private LienzoCentral lienzoCentral = new LienzoCentral();
     private LienzoFooter lienzoFooter = new LienzoFooter();
 
     public VentanaPrincipal() throws HeadlessException {
         super();
-        this.setTitle("Sistema Clínico");
-        this.setSize(500, 400);
+        this.setTitle("Administra tus Préstamos");
+        this.setSize(600, 500);
         this.setLocationRelativeTo(rootPane);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setLayout(new BorderLayout());
@@ -24,7 +25,7 @@ public class VentanaPrincipal extends JFrame {
         private JLabel lblTitulo = new JLabel("Préstamos");
 
         private JButton btnVentReg = new JButton("Registrar Préstamo");
-        private JButton btnVentGest = new JButton("Administrar Préstamo");
+        private JButton btnVentPago = new JButton("Registrar pago de cuotas");
         public LienzoCentral() {
             super();
             this.setLayout(new GridBagLayout());
@@ -48,7 +49,7 @@ public class VentanaPrincipal extends JFrame {
             gbcP.gridy = 1;
             panelCentro.add(btnVentReg, gbcP);
             gbcP.gridy = 2;
-            panelCentro.add(btnVentGest, gbcP);
+            panelCentro.add(btnVentPago, gbcP);
 
             gbc.gridx = 1;
             gbc.weightx = 1;
@@ -57,6 +58,11 @@ public class VentanaPrincipal extends JFrame {
             btnVentReg.addActionListener(e -> {
                 ventanaRegistroPrestamo = new VentanaRegistroPrestamo();
                 ventanaRegistroPrestamo.setVisible(true);
+            });
+
+            btnVentPago.addActionListener(e -> {
+                ventanaClientes = new VentanaClientes();
+                ventanaClientes.setVisible(true);
             });
         }
     }
